@@ -67,7 +67,7 @@ def insert_data_to_mysql(json_file, db_config):
 # MySQL 資料庫連線設定 (請替換為您的實際設定)
 db_config = {
     "host": "localhost",
-    "user": "root",
+    "user": "user1",
     "password": "1234",
     "database": "taipei",
 }

@@ -7,7 +7,7 @@ import mysql.connector
 
 def get_db():  # 連接資料庫
     return mysql.connector.connect(
-        user="root", password="1234", host="localhost", database="taipei"
+        user="user1", password="1234", host="localhost", database="taipei"
     )
 
 
