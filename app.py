@@ -1,7 +1,6 @@
 from fastapi import *
 from fastapi.responses import JSONResponse, FileResponse
 import json
-from collections import defaultdict
 import mysql.connector
 
 
