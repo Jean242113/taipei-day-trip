@@ -149,7 +149,9 @@ def get_attraction(attractionId: int):
             }
             return {"data": attraction}
         else:
-            raise HTTPException(status_code=404, detail="景點編號不正確")
+            return JSONResponse(
+                status_code=400, content={"error": True, "message": "景點編號不正確"}
+            )
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": True, "message": str(e)})
