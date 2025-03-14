@@ -78,8 +78,7 @@ def get_attractions(
             sql += " AND a.CAT = %s"
             val.append(category)
 
-        sql += " GROUP BY a._id LIMIT %s OFFSET %s"
-        val.extend([limit, offset])
+        sql += " GROUP BY a._id"
 
         mycursor.execute(sql, tuple(val))
         results = mycursor.fetchall()
@@ -102,10 +101,10 @@ def get_attractions(
                 }
             )
 
-        next_page = page + 1 if len(attractions) > limit else None
+        next_page = page + 1 if len(attractions) > offset + limit else None
         return {
             "nextPage": next_page,
-            "data": attractions,
+            "data": attractions[offset : offset + limit],
         }
 
     except Exception as e:
