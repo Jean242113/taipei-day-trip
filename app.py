@@ -2,6 +2,14 @@ from fastapi import *
 from fastapi.responses import JSONResponse, FileResponse
 import json
 from collections import defaultdict
+import mysql.connector
+
+
+def get_db():  # 連接資料庫
+    return mysql.connector.connect(
+        user="root", password="1234", host="localhost", database="taipei"
+    )
+
 
 app = FastAPI()
 
@@ -45,106 +53,150 @@ def get_attractions(
     category: str = Query(None),
 ):
     try:
+        mydb = get_db()
+        mycursor = mydb.cursor()
+
         limit = 12
         offset = page * limit
 
-        filtered_attractions = []
+        sql = """
+            SELECT a.*, GROUP_CONCAT(i.url) AS images
+            FROM attractions a
+            LEFT JOIN images i ON a._id = i.attraction_id
+            WHERE 1=1
+        """
+        val = []
 
-        for attraction in attractions_data:
-            if (
-                keyword
-                and keyword.lower() not in attraction["name"].lower()
-                and attraction["MRT"]
-                and keyword.lower() not in attraction["MRT"].lower()
-            ):
-                continue
-            if mrt and attraction["MRT"] != mrt:
-                continue
-            if category and attraction["CAT"] != category:
-                continue
+        if keyword:
+            sql += " AND (LOWER(a.name) LIKE %s OR LOWER(a.MRT) LIKE %s)"
+            val.extend([f"%{keyword.lower()}%", f"%{keyword.lower()}%"])
 
-            images = attraction.get("file", "").split("https://")
-            valid_images = []
-            for img in images:
-                if len(img) > 0:
-                    url = "https://" + img
-                    if url.lower().endswith((".jpg", ".jpeg", ".png")):
-                        valid_images.append(url)
-            filtered_attractions.append(
+        if mrt:
+            sql += " AND a.MRT = %s"
+            val.append(mrt)
+
+        if category:
+            sql += " AND a.CAT = %s"
+            val.append(category)
+
+        sql += " GROUP BY a._id LIMIT %s OFFSET %s"
+        val.extend([limit, offset])
+
+        mycursor.execute(sql, tuple(val))
+        results = mycursor.fetchall()
+
+        attractions = []
+        for row in results:
+            images = row[9].split(",") if row[9] else []
+            attractions.append(
                 {
-                    "id": attraction["_id"],
-                    "name": attraction["name"],
-                    "description": attraction["description"],
-                    "address": attraction["address"],
-                    "lat": attraction["latitude"],
-                    "lng": attraction["longitude"],
-                    "transport": attraction["direction"],
-                    "mrt": attraction["MRT"],
-                    "category": attraction["CAT"],
-                    "images": valid_images,
+                    "id": row[0],
+                    "name": row[1],
+                    "description": row[2],
+                    "address": row[3],
+                    "lat": row[4],
+                    "lng": row[5],
+                    "transport": row[6],
+                    "mrt": row[7],
+                    "category": row[8],
+                    "images": images,
                 }
             )
 
-        next_page = page + 1 if len(filtered_attractions) > offset + limit else None
+        next_page = page + 1 if len(attractions) > limit else None
         return {
             "nextPage": next_page,
-            "data": filtered_attractions[offset : offset + limit],
+            "data": attractions,
         }
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": True, "message": str(e)})
+    finally:
+        if "mydb" in locals() and mydb.is_connected():
+            mycursor.close()
+            mydb.close()
 
 
 @app.get("/api/attraction/{attractionId}")
 def get_attraction(attractionId: int):
     try:
-        for attraction in attractions_data:
-            if attraction["_id"] == attractionId:
+        mydb = get_db()
+        mycursor = mydb.cursor()
 
-                images = attraction.get("file", "").split("https://")
-                valid_images = []
-                for img in images:
-                    if len(img) > 0:
-                        url = "https://" + img
-                        if url.lower().endswith((".jpg", ".jpeg", ".png")):
-                            valid_images.append(url)
+        sql = """
+            SELECT a.*, GROUP_CONCAT(i.url) AS images
+            FROM attractions a
+            LEFT JOIN images i ON a._id = i.attraction_id
+            WHERE a._id = %s
+            GROUP BY a._id
+        """
+        val = (attractionId,)
+        mycursor.execute(sql, val)
+        result = mycursor.fetchone()
+        # print(result)
 
-                return {
-                    "data": {
-                        "id": attraction["_id"],
-                        "name": attraction["name"],
-                        "description": attraction["description"],
-                        "address": attraction["address"],
-                        "lat": attraction["latitude"],
-                        "lng": attraction["longitude"],
-                        "transport": attraction["direction"],
-                        "mrt": attraction["MRT"],
-                        "category": attraction["CAT"],
-                        "images": valid_images,
-                    }
-                }
-        raise HTTPException(status_code=404, detail="景點編號不正確")
+        if result:
+            images = result[9].split(",") if result[9] else []
+            attraction = {
+                "id": result[0],
+                "name": result[1],
+                "description": result[2],
+                "address": result[3],
+                "lat": result[4],
+                "lng": result[5],
+                "transport": result[6],
+                "mrt": result[7],
+                "category": result[8],
+                "images": images,
+            }
+            return {"data": attraction}
+        else:
+            raise HTTPException(status_code=404, detail="景點編號不正確")
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": True, "message": str(e)})
+    finally:
+        if "mydb" in locals() and mydb.is_connected():
+            mycursor.close()
+            mydb.close()
 
 
 @app.get("/api/mrts")
 def get_mrts():
     try:
-        # 計算每個捷運站的景點數量
-        mrt_counts = defaultdict(int)
-        for attraction in attractions_data:
-            if attraction["MRT"]:
-                mrt_counts[attraction["MRT"]] += 1
+        # 建立資料庫連線
+        conn = get_db()
+        mycursor = conn.cursor()
 
-        # 將捷運站和景點數量轉換為列表，並根據景點數量排序
-        mrts_with_counts = [(mrt, count) for mrt, count in mrt_counts.items()]
-        mrts_with_counts.sort(key=lambda x: x[1], reverse=True)
+        # SQL 查詢，計算每個捷運站的景點數量並排序
+        sql = """
+            SELECT MRT, COUNT(*) AS attraction_count
+            FROM attractions
+            WHERE MRT IS NOT NULL
+            GROUP BY MRT
+            ORDER BY attraction_count DESC
+        """
+
+        mycursor.execute(sql)
+        results = mycursor.fetchall()
 
         # 提取排序後的捷運站名稱列表
-        sorted_mrts = [mrt for mrt, count in mrts_with_counts]
+        sorted_mrts = [row[0] for row in results]
 
         return {"data": sorted_mrts}
+
+    except mysql.connector.Error as e:
+        # 處理資料庫相關的異常
+        print(f"Database Error: {e}")
+        return {"error": True, "message": str(e)}
+
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": True, "message": str(e)})
+        # 處理其他異常
+        print(f"Error: {e}")
+        return {"error": True, "message": str(e)}
+
+    finally:
+        # 確保資料庫連線關閉
+        if "conn" in locals() and conn.is_connected():
+            mycursor.close()
+            conn.close()
