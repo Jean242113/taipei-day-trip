@@ -78,7 +78,8 @@ def get_attractions(
             sql += " AND a.CAT = %s"
             val.append(category)
 
-        sql += " GROUP BY a._id"
+        sql += " GROUP BY a._id LIMIT %s OFFSET %s"
+        val.extend([limit, offset])
 
         mycursor.execute(sql, tuple(val))
         results = mycursor.fetchall()
@@ -100,11 +101,27 @@ def get_attractions(
                     "images": images,
                 }
             )
+        sql = "SELECT COUNT(*) FROM attractions a WHERE 1=1"
+        val = []
+        if keyword:
+            sql += " AND (LOWER(a.name) LIKE %s OR LOWER(a.MRT) LIKE %s)"
+            val.extend([f"%{keyword.lower()}%", f"%{keyword.lower()}%"])
 
-        next_page = page + 1 if len(attractions) > offset + limit else None
+        if mrt:
+            sql += " AND a.MRT = %s"
+            val.append(mrt)
+
+        if category:
+            sql += " AND a.CAT = %s"
+            val.append(category)
+
+        mycursor.execute(sql, tuple(val))
+        result_count = mycursor.fetchone()[0]
+
+        next_page = page + 1 if result_count > offset + limit else None
         return {
             "nextPage": next_page,
-            "data": attractions[offset : offset + limit],
+            "data": attractions,
         }
 
     except Exception as e:
@@ -131,7 +148,6 @@ def get_attraction(attractionId: int):
         val = (attractionId,)
         mycursor.execute(sql, val)
         result = mycursor.fetchone()
-        # print(result)
 
         if result:
             images = result[9].split(",") if result[9] else []
