@@ -41,6 +41,9 @@ async function fetchAttractions(page = 0, keyword = null, mrt = null) {
 // 自動載入更多資料
 const observer = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting && nextPage !== null) {
+        if (currentObserveElenment !== null) {
+            observer.unobserve(currentObserveElenment); // 移除舊的觀察目標
+        }
         currentPage = nextPage;
         displayAttractions(currentPage, document.getElementById("search-input").value);
     }
@@ -90,9 +93,6 @@ async function displayAttractions(page = 0, keyword = null, mrt = null) {
         });
 
         if (attractionsGroup.lastElementChild) {
-            if (currentObserveElenment !== null) {
-                observer.unobserve(currentObserveElenment); // 移除舊的觀察目標
-            }
             currentObserveElenment = attractionsGroup.lastElementChild;
             observer.observe(currentObserveElenment); // 觀察新的最後一個子元素
         }
