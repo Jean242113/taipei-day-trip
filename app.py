@@ -1,5 +1,6 @@
 from fastapi import *
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import json
 import mysql.connector
 
@@ -11,6 +12,8 @@ def get_db():  # 連接資料庫
 
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Static Pages (Never Modify Code in this Block)
