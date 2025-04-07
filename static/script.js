@@ -61,6 +61,10 @@ async function displayAttractions(page = 0, keyword = null, mrt = null) {
         }
 
         attractions.forEach(attraction => {
+            const attractionLink = document.createElement("a");
+            attractionLink.href = `/attraction/${attraction.id}`; // 設定超連結目標
+            attractionLink.classList.add("attraction-link");
+
             const attractionDiv = document.createElement("div");
             attractionDiv.classList.add("attraction");
 
@@ -89,7 +93,8 @@ async function displayAttractions(page = 0, keyword = null, mrt = null) {
             name.appendChild(info);
             containerDiv.appendChild(name);
 
-            attractionsGroup.appendChild(attractionDiv);
+            attractionLink.appendChild(attractionDiv);
+            attractionsGroup.appendChild(attractionLink);
         });
 
         if (attractionsGroup.lastElementChild) {

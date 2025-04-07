@@ -6,7 +6,7 @@
 body {
     width: 100%;
     margin: 0;
-    font-family: sans-serif;
+    font-family: Noto Sans TC;
 
 }
 
@@ -208,6 +208,8 @@ body {
 
 }
 
+
+
 .attraction {
     border: 1px solid #E8E8E8;
     text-align: center;
@@ -260,12 +262,183 @@ body {
     gap: 4px;
 }
 
+.logo-link,
+.attraction-link {
+    color: inherit;
+    /* 繼承父元素的顏色 */
+    text-decoration: none;
+    /* 移除底線 */
+}
+
+.logo-link:hover,
+.attraction-link:hover {
+    color: inherit;
+    /* 滑鼠懸停時也繼承顏色 */
+    text-decoration: none;
+    /* 滑鼠懸停時也移除底線 */
+}
+
 .footer {
     background-color: #757575;
     color: #fff;
     padding: 40px 0px;
     text-align: center;
     width: 100%;
+
+}
+
+.attraction-section {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 20px auto;
+
+}
+
+.profilt {
+    width: 100%;
+    width: 600px;
+    height: 400px;
+}
+
+.booking-form {
+    border: none;
+    background-color: #E8E8E8;
+    width: 600px;
+    height: 302px;
+    border-radius: 5px;
+    padding: 20px;
+
+}
+
+.booking-form-item-title {
+    font-size: 16px;
+    margin: 10px 0px;
+    font-weight: 700;
+    color: #666666;
+    font-style: bold;
+}
+
+.picture-current {
+    width: 540px;
+    height: 400px;
+    border-radius: 5;
+    position: relative;
+}
+
+.img-container {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 5px;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.circle-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ddd;
+    border: none;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.circle.active {
+    background-color: #333;
+}
+
+.pitleft-container,
+.pitright-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.pitleft-container {
+    left: 10px;
+}
+
+.pitright-container {
+    right: 10px;
+}
+
+.pitarrow img {
+    width: 30px;
+    height: 30px;
+}
+
+.separator {
+    width: 1200px;
+    border-bottom: 1px solid #ddd;
+    margin: 0px auto;
+}
+
+.infors {
+    font-size: 16px;
+    font-weight: 400;
+    max-width: 1200px;
+    margin: 20px auto;
+    color: #666666;
+
+}
+
+.address-title,
+.transport-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #666666;
+    font-style: bold;
+}
+
+#bookingButton {
+    background-color: #448899;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.attraction-title h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #666666;
+}
+
+.attraction-title p {
+    font-size: 16px;
+    color: #757575;
+    font-weight: 400;
+    font-family: Noto Sans TC;
+
+}
+
+.booking-form h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #666666;
+}
+
+.booking-form p {
+    font-size: 16px;
+    color: #757575;
+    font-weight: 400;
+    font-family: Noto Sans TC;
 
 }
 
@@ -422,6 +595,45 @@ body {
         grid-template-columns: repeat(2, 1fr);
         width: 570px;
 
+
+    }
+
+    .picture-current {
+        width: 600px;
+        height: 400px;
+        border-radius: 5;
+        position: relative;
+    }
+
+    .attraction-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: 600px;
+        margin: 20px auto;
+
+    }
+
+    .profilt {
+        width: 100%;
+        width: 600px;
+        height: 400px;
+    }
+
+
+    .separator {
+        width: 600px;
+        border-bottom: 1px solid #ddd;
+        margin: 0px auto;
+    }
+
+    .infors {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 400;
+        max-width: 600px;
+        margin: 20px auto;
+        color: #666666;
 
     }
 
@@ -585,4 +797,60 @@ body {
         width: 330px;
         /* 1 個欄位 */
     }
+
+    .img-container {
+        width: 360px;
+        height: 350px;
+        border-radius: 5;
+
+    }
+
+    .picture-current {
+        width: 360px;
+        height: 350px;
+        border-radius: 5;
+        position: relative;
+    }
+
+    .attraction-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: 360px;
+        margin: 20px auto;
+
+    }
+
+    .profilt {
+        width: 100%;
+        width: 340px;
+        height: 390px;
+    }
+
+    .booking-form {
+        border: none;
+        background-color: #E8E8E8;
+        width: 360px;
+        height: 280px;
+        border-radius: 5px;
+        padding: 20px;
+
+    }
+
+    .separator {
+        width: 360px;
+        border-bottom: 1px solid #ddd;
+        margin: 0px auto;
+    }
+
+    .infors {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 400;
+        max-width: 360px;
+        margin: 20px auto;
+        color: #666666;
+
+    }
+
 }
