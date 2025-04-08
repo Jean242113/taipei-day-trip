@@ -47,18 +47,20 @@
             <div class="booking-form-item">
               <h1>訂購導覽行程</h1>
               <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
-              <label for="date" class="booking-form-item-title">選擇日期:</label>
-              <input type="date" id="date" name="date" required>
               <div class="booking-form-item-title">
-                <label>
-                  選擇時間：
-                  <label>
-                    <input type="radio" name="half-date" value="morning" checked> 上半天
-                  </label>
-                  <label>
-                    <input type="radio" name="half-date" value="afternoon"> 下半天
-                  </label>
-                </label>
+                <label for="date">選擇日期:</label>
+                <input type="date" placeholder="yyyy/mm/dd" id="date" name="date" required>
+              </div>
+              <div class="booking-form-item-title">
+                <div class="half-date-container">
+                  <label>選擇時間：</label>
+                  <div class="half-date-container">
+                    <input type="radio" name="half-date" value="morning" checked><label>上半天</label>
+                  </div>
+                  <div class="half-date-container">
+                    <input type="radio" name="half-date" value="afternoon"><label>下半天</label>
+                  </div>
+                </div>
               </div>
               <div class="booking-form-item-title">
                 <label for="price">導覽費用：</label>
