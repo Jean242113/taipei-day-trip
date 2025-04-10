@@ -1,4 +1,4 @@
-body {
+.login-body {
     font-family: sans-serif;
     margin: 0;
     display: flex;
@@ -6,12 +6,6 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #f4f4f4;
-}
-
-#openModalBtn {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
 }
 
 .modal {
@@ -51,6 +45,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     position: relative;
+    margin: auto;
+    margin-top: 5%;
 }
 
 .close {
@@ -79,12 +75,12 @@ body {
     cursor: pointer;
 }
 
-.main,
-.container {
+.login-form-main,
+.login-form-container {
     margin: 10px;
 }
 
-.main p {
+.login-form-main p {
     margin-block-start: 0em;
     margin-block-end: 0em;
     text-align: center;
@@ -98,12 +94,6 @@ body {
 
 .input-group {
     margin-bottom: 10px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
 }
 
 input[type=email],
@@ -137,8 +127,8 @@ input[type=password]::placeholder {
 }
 
 
-p,
-p a {
+.login-p,
+.login-p a {
     text-align: center;
     color: #666666;
     font-size: 16px;

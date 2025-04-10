@@ -156,4 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('API 請求失敗:', error);
             // 處理錯誤情況，例如顯示錯誤訊息
         });
+
+    addLoginInit(); // 初始化登入功能
 });
