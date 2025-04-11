@@ -1,4 +1,6 @@
-function addLoginInit() {
+async function addLoginInit() {
+    await checkLoginStatus()
+
     if (isUserLoggedIn()) {
         document.getElementById("login").innerHTML = "登出系統";
     } else {
@@ -10,6 +12,7 @@ function addLoginInit() {
             logout();
             return;
         }
+        // 載入登入頁面
         fetch("/static/login.html", {
             method: "GET",
             headers: {
@@ -51,10 +54,9 @@ function addLoginInit() {
     }
 
     function showRegisterForm() {
-        console.log('showRegisterForm called');
+        document.getElementById("login-message").style.display = "none"; // Hide the message when switching forms
         if (document.getElementById('username-group').style.display == 'none') {
             // 實作顯示註冊表單的邏輯
-            // document.getElementsByClassName('modal-content')[0].style.height = '332px';
             document.getElementById('username-group').style.display = 'block';
             document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '註冊會員帳號';
             document.getElementById('login-button').innerHTML = '註冊新會員';
@@ -63,7 +65,6 @@ function addLoginInit() {
             return;
         }
         //實作顯示登入表單的邏輯
-        // document.getElementsByClassName('modal-content')[0].style.height = '275px';
         document.getElementById('username-group').style.display = 'none';
         document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '登入會員帳號';
         document.getElementById('login-button').innerHTML = '登入帳戶';
@@ -151,4 +152,24 @@ function isUserLoggedIn() {
 function logout() {
     localStorage.removeItem("token"); // Remove the token from local storage
     window.location.reload(); // Reload the page after logout
+}
+
+async function checkLoginStatus() {
+    const token = localStorage.getItem("token");
+    if (token) {
+        fetch("/api/user/auth", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.log("User is not logged in:", data.message);
+                    localStorage.removeItem("token");
+                }
+            })
+            .catch(error => console.error("Error checking login status:", error));
+    }
 }
