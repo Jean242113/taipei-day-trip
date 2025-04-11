@@ -8,25 +8,24 @@ function addLoginInit() {
         })
             .then(response => response.text())
             .then(html => {
-                // console.log(html);
                 document.getElementsByClassName("login-container")[0].innerHTML = html;
                 document.getElementsByClassName("login-container")[0].style.display = "block";
+                document.getElementById('username-group').style.display = 'none';
 
-                // const loginRegisterButton = document.querySelector('.login-register-button'); // 假設你的登入/註冊按鈕有這個 class
                 const loginContainer = document.getElementsByClassName('login-container')[0];
                 const closeButton = loginContainer.querySelector('.close-button');
                 if (closeButton) {
                     closeButton.addEventListener('click', closeModal);
                 }
 
-                const registerLink = loginContainer.querySelector('.register-link');
+                const registerLink = document.getElementById('footer-link');
                 if (registerLink) {
                     registerLink.addEventListener('click', showRegisterForm);
                 }
 
-                const loginLink = loginContainer.querySelector('.login-link');
-                if (loginLink) {
-                    loginLink.addEventListener('click', showLoginForm);
+                const loginButton = document.getElementById('login-button');
+                if (loginButton) {
+                    loginButton.addEventListener('click', loginButtonClick);
                 }
             })
             .catch(error => console.error("Error loading login page:", error));
@@ -42,14 +41,87 @@ function addLoginInit() {
     }
 
     function showRegisterForm() {
-        // 實作顯示註冊表單的邏輯 (可能需要從後端請求註冊表單的 HTML，或者在後端回傳的 HTML 中包含註冊和登入兩種表單並在此切換)
-        console.log('顯示註冊表單');
-        // ...
+        console.log('showRegisterForm called');
+        if (document.getElementById('username-group').style.display == 'none') {
+            // 實作顯示註冊表單的邏輯
+            document.getElementsByClassName('modal-content')[0].style.height = '332px';
+            document.getElementById('username-group').style.display = 'block';
+            document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '註冊會員帳號';
+            document.getElementById('login-button').innerHTML = '註冊新會員';
+            document.getElementById('footer-info').innerHTML = '已經有帳戶了？';
+            document.getElementById('footer-link').innerHTML = '點此登入';
+            return;
+        }
+        //實作顯示登入表單的邏輯
+        document.getElementsByClassName('modal-content')[0].style.height = '275px';
+        document.getElementById('username-group').style.display = 'none';
+        document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '登入會員帳號';
+        document.getElementById('login-button').innerHTML = '登入帳戶';
+        document.getElementById('footer-info').innerHTML = '還沒有帳戶？';
+        document.getElementById('footer-link').innerHTML = '點此註冊';
     }
 
-    function showLoginForm() {
-        // 實作顯示登入表單的邏輯
-        console.log('顯示登入表單');
-        // ...
+    function loginButtonClick() {
+        const loginButton = document.getElementById('login-button');
+        if (loginButton.innerHTML === '登入帳戶') {
+            login();
+        } else {
+            register();
+        }
+    }
+
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const loginButton = document.getElementById('login-button');
+        loginButton.disabled = true; // Disable the button to prevent multiple clicks
+
+        fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // Reload the page on successful login
+                } else {
+                    alert("Login failed: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error during login:", error))
+            .finally(() => {
+                loginButton.disabled = false; // Re-enable the button after the request is complete
+            });
+    }
+
+    function register() {
+        const name = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const loginButton = document.getElementById('login-button');
+        loginButton.disabled = true; // Disable the button to prevent multiple clicks
+
+        fetch("/api/user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert("註冊成功"); // Reload the page on successful registration
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error during registration:", error))
+            .finally(() => {
+                loginButton.disabled = false; // Re-enable the button after the request is complete
+            });
     }
 }

@@ -96,6 +96,7 @@
     margin-bottom: 10px;
 }
 
+input[id=username],
 input[type=email],
 input[type=password] {
     width: 310px;
@@ -107,6 +108,7 @@ input[type=password] {
     font-size: 16px;
 }
 
+input[id=username],
 input[type=email]::placeholder,
 input[type=password]::placeholder {
     color: #757575;
@@ -126,9 +128,13 @@ input[type=password]::placeholder {
     width: 100%;
 }
 
+.login-form-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 
-.login-p,
-.login-p a {
+.login-p {
     text-align: center;
     color: #666666;
     font-size: 16px;
@@ -136,8 +142,3 @@ input[type=password]::placeholder {
     line-height: 13.3px;
     text-decoration: none;
 }
-
-
-/* p a:hover {
-    text-decoration: underline;
-} */

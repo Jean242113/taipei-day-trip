@@ -1,8 +1,10 @@
 from fastapi import *
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 import json
 import mysql.connector
+import jwt
+from pydantic import BaseModel
 
 
 def get_db():  # 連接資料庫
@@ -219,3 +221,63 @@ def get_mrts():
         if "conn" in locals() and conn.is_connected():
             mycursor.close()
             conn.close()
+
+
+class User(BaseModel):
+    name: str
+    email: str
+    password: str
+
+
+@app.post("/api/user")
+def user(user: User):
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM member WHERE email = %s", (user.email,))
+    existing_user = cursor.fetchone()
+    con.close()
+    if existing_user is not None:
+        res_content = {
+            "error": True,
+            "message": "註冊失敗，重複的 Email 或其他原因",
+        }
+        return JSONResponse(content=res_content, status_code=400)
+    # 插入資料庫
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT INTO member (name, email, password) VALUES (%s,%s, %s)",
+        (user.name, user.email, user.password),
+    )
+    con.commit()
+    con.close()
+    res_content = {
+        "ok": True,
+        "message": "註冊成功",
+    }
+
+    return JSONResponse(content=res_content, status_code=200)
+
+
+# @app.post("/signin")
+# def signin(request: Request, email: str = Form(...), password: str = Form(...)):
+#     if not email or not password:
+#         return RedirectResponse(url="/error?message=請輸入帳號密碼", status_code=303)
+#     con = get_db()
+#     cursor = con.cursor()
+#     cursor.execute(
+#         "SELECT email, password, id, name FROM member WHERE email = %s",
+#         (email,),
+#     )
+#     existing_user = cursor.fetchone()
+#     con.close()
+#     if existing_user is None:
+#         return RedirectResponse(
+#             url="/error?message=帳號不存在，請先完成註冊", status_code=303
+#         )
+#     if email == existing_user[0] and password == existing_user[1]:
+#         request.session["USER_ID"] = existing_user[2]
+#         request.session["SIGNED-IN"] = True
+#         request.session["NAME"] = existing_user[3]
+#         return RedirectResponse(url="/member", status_code=303)
+#     return RedirectResponse(url="/error?message=帳號或密碼輸入錯誤", status_code=303)
