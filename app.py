@@ -1,8 +1,13 @@
 from fastapi import *
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel
+from datetime import datetime, timedelta, timezone
+
 import json
 import mysql.connector
+import jwt
 
 
 def get_db():  # 連接資料庫
@@ -12,8 +17,11 @@ def get_db():  # 連接資料庫
 
 
 app = FastAPI()
+security = HTTPBearer()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+key = "jzB42joCEFRnYVU34bTq"
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -219,3 +227,116 @@ def get_mrts():
         if "conn" in locals() and conn.is_connected():
             mycursor.close()
             conn.close()
+
+
+class User(BaseModel):
+    name: str
+    email: str
+    password: str
+
+
+@app.post("/api/user")
+def user(user: User):
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM member WHERE email = %s", (user.email,))
+    existing_user = cursor.fetchone()
+    con.close()
+    if existing_user is not None:
+        res_content = {
+            "error": True,
+            "message": "註冊失敗，重複的 Email 或其他原因",
+        }
+        return JSONResponse(content=res_content, status_code=400)
+    if not user.name or not user.email or not user.password:
+        res_content = {
+            "error": True,
+            "message": "註冊失敗，請檢查輸入的資料是否完整",
+        }
+        return JSONResponse(content=res_content, status_code=400)
+    # 插入資料庫
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT INTO member (name, email, password) VALUES (%s,%s, %s)",
+        (user.name, user.email, user.password),
+    )
+    con.commit()
+    con.close()
+    res_content = {
+        "ok": True,
+        "message": "註冊成功",
+    }
+
+    return JSONResponse(content=res_content, status_code=200)
+
+
+class LoginUser(BaseModel):
+    email: str
+    password: str
+
+
+@app.put("/api/user/auth")
+def signin(user: LoginUser):
+    if not user.email or not user.password:
+        res_content = {"error": True, "message": "登入失敗，帳號或密碼錯誤或其他原因"}
+        return JSONResponse(content=res_content, status_code=400)
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT email, password, name FROM member WHERE email = %s",
+            (user.email,),
+        )
+        existing_user = cursor.fetchone()
+        con.close()
+        if existing_user is None:
+            res_content = {
+                "error": True,
+                "message": "登入失敗，帳號或密碼錯誤或其他原因",
+            }
+            return JSONResponse(content=res_content, status_code=400)
+        if (
+            user.email == existing_user["email"]
+            and user.password == existing_user["password"]
+        ):
+            data = {
+                "email": existing_user["email"],
+                "name": existing_user["name"],
+                "exp": datetime.now(timezone.utc) + timedelta(days=7),
+            }
+            res_content = {"token": jwt.encode(data, key, algorithm="HS256")}
+            return JSONResponse(content=res_content, status_code=200)
+        else:
+            res_content = {
+                "error": True,
+                "message": "登入失敗，帳號或密碼錯誤或其他原因",
+            }
+            return JSONResponse(content=res_content, status_code=400)
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": "伺服器內部錯誤"}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+@app.get("/api/user/auth")
+def getUserInfo(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        decoded = jwt.decode(token, key, algorithms=["HS256"])
+        email = decoded["email"]
+        name = decoded["name"]
+        return {"data": {"email": email, "name": name}}
+    except jwt.ExpiredSignatureError:
+        return JSONResponse(
+            status_code=401, content={"error": True, "message": "Token expired"}
+        )
+    except jwt.InvalidTokenError:
+        return JSONResponse(
+            status_code=401, content={"error": True, "message": "Invalid token"}
+        )
+    except Exception as e:
+        print("ex:", e)
+        return JSONResponse(
+            status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
+        )

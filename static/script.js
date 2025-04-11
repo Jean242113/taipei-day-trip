@@ -165,8 +165,7 @@ async function init() {
         displayAttractions(currentPage, keyword);
     });
 
-
-    // observer.observe(document.querySelector(".attractions").lastElementChild);
+    addLoginInit();
 }
 
 init();
