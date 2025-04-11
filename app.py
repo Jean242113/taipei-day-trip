@@ -5,6 +5,7 @@ import json
 import mysql.connector
 import jwt
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 
 
 def get_db():  # 連接資料庫
@@ -16,6 +17,8 @@ def get_db():  # 連接資料庫
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+key = "jzB42joCEFRnYVU34bTq"
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -242,6 +245,12 @@ def user(user: User):
             "message": "註冊失敗，重複的 Email 或其他原因",
         }
         return JSONResponse(content=res_content, status_code=400)
+    if not user.name or not user.email or not user.password:
+        res_content = {
+            "error": True,
+            "message": "註冊失敗，請檢查輸入的資料是否完整",
+        }
+        return JSONResponse(content=res_content, status_code=400)
     # 插入資料庫
     con = get_db()
     cursor = con.cursor()
@@ -259,25 +268,50 @@ def user(user: User):
     return JSONResponse(content=res_content, status_code=200)
 
 
-# @app.post("/signin")
-# def signin(request: Request, email: str = Form(...), password: str = Form(...)):
-#     if not email or not password:
-#         return RedirectResponse(url="/error?message=請輸入帳號密碼", status_code=303)
-#     con = get_db()
-#     cursor = con.cursor()
-#     cursor.execute(
-#         "SELECT email, password, id, name FROM member WHERE email = %s",
-#         (email,),
-#     )
-#     existing_user = cursor.fetchone()
-#     con.close()
-#     if existing_user is None:
-#         return RedirectResponse(
-#             url="/error?message=帳號不存在，請先完成註冊", status_code=303
-#         )
-#     if email == existing_user[0] and password == existing_user[1]:
-#         request.session["USER_ID"] = existing_user[2]
-#         request.session["SIGNED-IN"] = True
-#         request.session["NAME"] = existing_user[3]
-#         return RedirectResponse(url="/member", status_code=303)
-#     return RedirectResponse(url="/error?message=帳號或密碼輸入錯誤", status_code=303)
+class LoginUser(BaseModel):
+    email: str
+    password: str
+
+
+@app.put("/api/user/auth")
+def signin(user: LoginUser):
+    if not user.email or not user.password:
+        res_content = {"error": True, "message": "登入失敗，帳號或密碼錯誤或其他原因"}
+        return JSONResponse(content=res_content, status_code=400)
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT email, password, name FROM member WHERE email = %s",
+            (user.email,),
+        )
+        existing_user = cursor.fetchone()
+        con.close()
+        print(existing_user)
+        if existing_user is None:
+            res_content = {
+                "error": True,
+                "message": "登入失敗，帳號或密碼錯誤或其他原因",
+            }
+            return JSONResponse(content=res_content, status_code=400)
+        if (
+            user.email == existing_user["email"]
+            and user.password == existing_user["password"]
+        ):
+            data = {
+                "email": existing_user["email"],
+                "name": existing_user["name"],
+                "exp": datetime.now() + timedelta(days=7),
+            }
+            res_content = {"token": jwt.encode(data, key, algorithm="HS256")}
+            return JSONResponse(content=res_content, status_code=200)
+        else:
+            res_content = {
+                "error": True,
+                "message": "登入失敗，帳號或密碼錯誤或其他原因",
+            }
+            return JSONResponse(content=res_content, status_code=400)
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": "伺服器內部錯誤"}
+        return JSONResponse(content=res_content, status_code=500)

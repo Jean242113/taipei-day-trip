@@ -41,7 +41,7 @@
     width: 100%;
     /* Could be more or less, depending on screen size */
     max-width: 340px;
-    height: 275px;
+    /* height: 275px; */
     border-radius: 8px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     position: relative;
@@ -141,4 +141,8 @@ input[type=password]::placeholder {
     font-weight: 500;
     line-height: 13.3px;
     text-decoration: none;
+}
+
+#login-message {
+    display: none;
 }

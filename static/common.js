@@ -1,5 +1,15 @@
 function addLoginInit() {
+    if (isUserLoggedIn()) {
+        document.getElementById("login").innerHTML = "登出系統";
+    } else {
+        document.getElementById("login").innerHTML = "登入 / 註冊";
+    }
+
     document.getElementById("login").addEventListener("click", () => {
+        if (document.getElementById("login").innerHTML === "登出系統") {
+            logout();
+            return;
+        }
         fetch("/static/login.html", {
             method: "GET",
             headers: {
@@ -44,7 +54,7 @@ function addLoginInit() {
         console.log('showRegisterForm called');
         if (document.getElementById('username-group').style.display == 'none') {
             // 實作顯示註冊表單的邏輯
-            document.getElementsByClassName('modal-content')[0].style.height = '332px';
+            // document.getElementsByClassName('modal-content')[0].style.height = '332px';
             document.getElementById('username-group').style.display = 'block';
             document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '註冊會員帳號';
             document.getElementById('login-button').innerHTML = '註冊新會員';
@@ -53,7 +63,7 @@ function addLoginInit() {
             return;
         }
         //實作顯示登入表單的邏輯
-        document.getElementsByClassName('modal-content')[0].style.height = '275px';
+        // document.getElementsByClassName('modal-content')[0].style.height = '275px';
         document.getElementById('username-group').style.display = 'none';
         document.getElementsByClassName('login-form-main')[0].firstChild.innerHTML = '登入會員帳號';
         document.getElementById('login-button').innerHTML = '登入帳戶';
@@ -76,8 +86,8 @@ function addLoginInit() {
         const loginButton = document.getElementById('login-button');
         loginButton.disabled = true; // Disable the button to prevent multiple clicks
 
-        fetch("/api/login", {
-            method: "POST",
+        fetch("/api/user/auth", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -85,10 +95,14 @@ function addLoginInit() {
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                if (data.token) {
+                    localStorage.setItem("token", data.token); // Store the token in local storage
                     window.location.reload(); // Reload the page on successful login
                 } else {
-                    alert("Login failed: " + data.message);
+                    const loginMessage = document.getElementById("login-message");
+                    loginMessage.innerHTML = data.message;
+                    loginMessage.style.color = "red"; // Change the color of the message to red
+                    loginMessage.style.display = "block"; // Show the message
                 }
             })
             .catch(error => console.error("Error during login:", error))
@@ -113,10 +127,13 @@ function addLoginInit() {
         })
             .then(response => response.json())
             .then(data => {
+                const loginMessage = document.getElementById("login-message");
+                loginMessage.innerHTML = data.message;
+                loginMessage.style.display = "block"; // Show the message
                 if (data.ok) {
-                    alert("註冊成功"); // Reload the page on successful registration
+                    loginMessage.style.color = "green"; // Change the color of the message to green
                 } else {
-                    alert(data.message);
+                    loginMessage.style.color = "red"; // Change the color of the message to red
                 }
             })
             .catch(error => console.error("Error during registration:", error))
@@ -124,4 +141,14 @@ function addLoginInit() {
                 loginButton.disabled = false; // Re-enable the button after the request is complete
             });
     }
+}
+
+function isUserLoggedIn() {
+    const token = localStorage.getItem("token");
+    return token !== null && token !== undefined && token !== "undefined" && token !== "null";
+}
+
+function logout() {
+    localStorage.removeItem("token"); // Remove the token from local storage
+    window.location.reload(); // Reload the page after logout
 }
