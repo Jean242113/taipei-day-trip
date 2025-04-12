@@ -1,15 +1,5 @@
-.login-body {
-    font-family: sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f4f4f4;
-}
-
 .modal {
-    /* display: none; */
+    font-family: sans-serif;
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
@@ -25,8 +15,6 @@
     /* Enable scroll if needed */
     background-color: rgba(0, 0, 0, 0.4);
     /* Black w/ opacity */
-    justify-content: center;
-    align-items: center;
 }
 
 .decorator {

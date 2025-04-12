@@ -22,7 +22,6 @@ async function addLoginInit() {
             .then(response => response.text())
             .then(html => {
                 document.getElementsByClassName("login-container")[0].innerHTML = html;
-                document.getElementsByClassName("login-container")[0].style.display = "block";
                 document.getElementById('username-group').style.display = 'none';
 
                 const loginContainer = document.getElementsByClassName('login-container')[0];
@@ -40,6 +39,8 @@ async function addLoginInit() {
                 if (loginButton) {
                     loginButton.addEventListener('click', loginButtonClick);
                 }
+
+                document.getElementsByClassName("login-container")[0].style.display = "block"; // 顯示登入頁面
             })
             .catch(error => console.error("Error loading login page:", error));
     });

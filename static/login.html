@@ -1,44 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<div id="modal" class="modal">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登入頁面</title>
-    <link rel="stylesheet" href="/static/login.css">
-</head>
-
-<body class="login-body">
-    <div id="modal" class="modal">
-
-        <div class="modal-content">
-            <div class="decorator bar"></div>
-            <div class="close">
-                <button class="close-button"></button>
+    <div class="modal-content">
+        <div class="decorator bar"></div>
+        <div class="close">
+            <button class="close-button"></button>
+        </div>
+        <div class="login-form-main">
+            <p class="login-p">登入會員帳號</p>
+        </div>
+        <div class="login-form-container">
+            <div class="input-group" id="username-group">
+                <input id="username" name="username" placeholder="輸入姓名">
             </div>
-            <div class="login-form-main">
-                <p class="login-p">登入會員帳號</p>
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="輸入電子信箱">
             </div>
-            <div class="login-form-container">
-                <div class="input-group" id="username-group">
-                    <input id="username" name="username" placeholder="輸入姓名">
-                </div>
-                <div class="input-group">
-                    <input type="email" id="email" name="email" placeholder="輸入電子信箱">
-                </div>
-                <div class="input-group">
-                    <input type="password" id="password" name="password" placeholder="輸入密碼">
-                </div>
-                <button class="login-button" id="login-button">登入帳戶</button>
-                <p class="login-p" id="login-message"></p>
-                <div class="login-form-footer">
-                    <p class="login-p" id="footer-info">還沒有帳戶？</p>
-                    <p class="login-p" id="footer-link">點此註冊</p>
-                </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="輸入密碼">
+            </div>
+            <button class="login-button" id="login-button">登入帳戶</button>
+            <p class="login-p" id="login-message"></p>
+            <div class="login-form-footer">
+                <p class="login-p" id="footer-info">還沒有帳戶？</p>
+                <p class="login-p" id="footer-link">點此註冊</p>
             </div>
         </div>
     </div>
-
-</body>
-
-</html>
+</div>
