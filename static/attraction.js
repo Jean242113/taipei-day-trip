@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const attractionId = getAttractionIdFromUrl();
 
     // 取得 HTML 元素
-    const bookingForm = document.querySelector('.booking-form');
     const imgContainer = document.querySelector('.img-container');
     const circleContainer = document.querySelector('.circle-container');
     const leftArrow = document.querySelector('.left-arrow');
@@ -145,6 +144,42 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    function addBookingInit() {
+        const bookingButton = document.getElementById('bookingButton');
+        bookingButton.addEventListener('click', () => {
+            const date = document.getElementById('date').value;
+            const time = getSelectedHalfDate();
+            const priceDisplay = document.getElementById('priceDisplay').textContent;
+            const price = parseInt(priceDisplay.replace(/\D/g, '')); // 取得價格
+
+            // 在這裡處理預定邏輯，例如發送請求到後端
+            console.log(`預定日期: ${date}, 時段: ${time}, 價格: ${price}`);
+            fetch('/api/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 使用 token 認證
+                },
+                body: JSON.stringify({
+                    attractionId: attractionId,
+                    date: date,
+                    time: time,
+                    price: price
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.attractionId) {
+                        // alert('預定成功！');
+                        window.location.href = '/booking'; // 預定成功後導向預定頁面
+                    } else {
+                        document.getElementById("login").click(); // 顯示登入頁面
+                    }
+                })
+                .catch(error => console.error('預定請求失敗:', error));
+        });
+    }
+
     // 頁面載入後執行
     fetchAttractionData(attractionId)
         .then(data => {
@@ -158,4 +193,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     addLoginInit(); // 初始化登入功能
+    addBookingInit(); // 初始化預定功能
 });

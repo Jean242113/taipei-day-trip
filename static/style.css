@@ -1,31 +1,3 @@
-* {
-    box-sizing: border-box;
-
-}
-
-body {
-    width: 100%;
-    margin: 0;
-    font-family: Noto Sans TC;
-
-}
-
-.navigation {
-    background-color: #f0f0f0;
-    padding: 10px 0px;
-    width: 100%;
-}
-
-.navigation-container {
-    width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-
-}
-
 .logo {
     font-size: 30px;
     color: #448899;
@@ -278,14 +250,7 @@ body {
     /* 滑鼠懸停時也移除底線 */
 }
 
-.footer {
-    background-color: #757575;
-    color: #fff;
-    padding: 40px 0px;
-    text-align: center;
-    width: 100%;
 
-}
 
 .attraction-section {
     display: flex;
@@ -442,7 +407,7 @@ input[type="radio"]:checked {
 .separator {
     width: 1200px;
     border-bottom: 1px solid #ddd;
-    margin: 0px auto;
+    margin: 30px auto;
 }
 
 .infors {
@@ -563,15 +528,7 @@ input[type="radio"]:checked {
         display: grid;
     }
 
-    .navigation-container {
-        width: 600px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
 
-
-    }
 
     .list-bar {
         width: 600px;
@@ -687,11 +644,6 @@ input[type="radio"]:checked {
     }
 
 
-    .separator {
-        width: 600px;
-        border-bottom: 1px solid #ddd;
-        margin: 0px auto;
-    }
 
     .infors {
         width: 100%;
@@ -764,15 +716,7 @@ input[type="radio"]:checked {
         display: grid;
     }
 
-    .navigation-container {
-        width: 360px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
 
-
-    }
 
     .list-bar {
         width: 360px;
@@ -911,11 +855,7 @@ input[type="radio"]:checked {
 
     }
 
-    .separator {
-        width: 360px;
-        border-bottom: 1px solid #ddd;
-        margin: 40px auto;
-    }
+
 
     .infors {
         width: 100%;

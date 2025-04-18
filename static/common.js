@@ -45,6 +45,15 @@ async function addLoginInit() {
             .catch(error => console.error("Error loading login page:", error));
     });
 
+    document.getElementById("booking").addEventListener("click", () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "/booking"; // 導向預定頁面
+        } else {
+            document.getElementById("login").click(); // 顯示登入頁面
+        }
+    });
+
     function closeModal() {
         // 實作關閉彈出視窗的邏輯 (例如：設定 loginContainer 的 display 為 'none')
         const loginContainer = document.getElementsByClassName('login-container')[0];
@@ -152,7 +161,7 @@ function isUserLoggedIn() {
 
 function logout() {
     localStorage.removeItem("token"); // Remove the token from local storage
-    window.location.reload(); // Reload the page after logout
+    window.location.href = "/"; // Reload the page after logout
 }
 
 async function checkLoginStatus() {
@@ -169,6 +178,10 @@ async function checkLoginStatus() {
                 if (data.error) {
                     console.log("User is not logged in:", data.message);
                     localStorage.removeItem("token");
+                }
+                else {
+                    localStorage.setItem("name", data.data.name);
+                    localStorage.setItem("email", data.data.email);
                 }
             })
             .catch(error => console.error("Error checking login status:", error));

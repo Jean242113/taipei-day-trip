@@ -7,47 +7,68 @@
   <title>Booking</title>
   <link rel="stylesheet" href="../static/style.css">
   <link rel="stylesheet" href="../static/login.css">
+  <link rel="stylesheet" href="../static/booking.css">
+  <link rel="stylesheet" href="../static/common.css">
 </head>
 
 <body>
   <div class="login-container"></div>
+
   <header>
     <div class="navigation">
       <div class="navigation-container">
-        <div class="logo">台北一日遊</div>
+        <a href="/" class="logo-link">
+          <div class="logo">台北一日遊</div>
+        </a>
         <div class="nav">
-          <button>預定行程</a>
+          <button id="booking">預定行程</a>
             <button id="login"></a>
         </div>
       </div>
     </div>
+  </header>
+  <div class="bookingmain">
     <div class="headline">
-      <p>您好，Yakko，待預訂的行程如下：</p>
+      <p></p>
     </div>
-    <div class="booking-section">
-      <div class="delete">
-        <button class="delete-button"></button>
+    <div id="empty-container">
+      <div class="empty-message">
+        <p>目前沒有任何待預訂的行程</p>
       </div>
-      <div class="booking-infor">
-        <div class="frame1">
-          <p>台北一日遊：平安鐘</p>
+    </div>
+
+    <div id="booking-container">
+      <div class="booking-section">
+        <div class="bookingpicture-container">
+          <img class="booking-picture"></img>
         </div>
-        <div class="frame2">
-          <p>日期：2021-04-23</p>
+        <div class="booking-infor">
+          <div id="frame1">
+            <p></p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame2">
+            <p class="booking-title">日期：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame3">
+            <p class="booking-title">時間：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame4">
+            <p class="booking-title">費用：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame5">
+            <p class="booking-title">地點：</p>
+            <p></p>
+          </div>
         </div>
-        <div class="frame3">
-          <p>時間:早上 9 點到下午 4 點</p>
-        </div>
-        <div class="frame4">
-          <p>費用：新台幣 2000 元</p>
-        </div>
-        <div class="frame5">
-          <p>地點：臺北市 大安區忠孝東路4段</p>
+        <div class="delete">
+          <button class="delete-button"></button>
         </div>
       </div>
-      <div class="bookingpicture-container">
-        <div class="booking-picture"></div>
-      </div>
+
       <div class="separator"></div>
       <div class="contactform">
         <div class="contactform-title">
@@ -75,7 +96,7 @@
           <p>信用卡付款資訊</p>
         </div>
         <div class="field">
-          <label for="card-number">卡片號碼：：</label>
+          <label for="card-number">卡片號碼：</label>
           <input type="text" id="card-number" name="card-number" placeholder="**** **** **** ****" required>
         </div>
         <div class="field">
@@ -90,19 +111,21 @@
       <div class="separator"></div>
       <div class="confirm-container">
         <div class="confirm-title">
-          <p>總價：新台幣 2000 元</p>
+          <p></p>
         </div>
         <div class="confirmbutton-container">
           <button type="button" id="confirm-button">確認訂購並付款</button>
         </div>
       </div>
-      <footer>
-        <div class="footer">
-          <p>COPYRIGHT © 2021 台北一日遊</p>
-        </div>
-      </footer>
-      <script src="static/script.js"></script>
-      <script src="static/common.js"></script>
+    </div>
+  </div>
+  <footer>
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+  </footer>
+  <script src="static/booking.js"></script>
+  <script src="static/common.js"></script>
 </body>
 
 </html>
