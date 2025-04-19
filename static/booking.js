@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     addLoginInit();
     addBookingInit();
 
+    if (!isUserLoggedIn()) {
+        window.location.href = "/"; // 導向首頁
+    }
+
     document.getElementById("empty-container").style.display = "none"; // 隱藏空的預定行程區域
     document.getElementById("booking-container").style.display = "none"; // 隱藏預定行程區域
 
