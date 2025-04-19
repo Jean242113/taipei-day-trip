@@ -1,0 +1,336 @@
+.bookingmain {
+    margin: 0 auto;
+    width: 1200px;
+
+}
+
+.headline {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: auto;
+    max-width: 1000px;
+}
+
+.headline p {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 16px;
+    color: #666666;
+}
+
+.booking-section {
+    width: 100%;
+    display: flex;
+    margin: auto;
+    max-width: 980px;
+}
+
+
+.bookingpicture-container {
+    width: 250px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.booking-picture {
+    width: 100%;
+    height: 200px;
+    object-fit: fill;
+    background-color: #f0f0f0;
+
+}
+
+
+#frame1 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #448899;
+}
+
+.booking-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.frame-info p {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 13.3px;
+    color: #666666;
+    display: inline-block;
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.frame-info .booking-title {
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.delete {
+    flex: 1;
+    direction: rtl;
+}
+
+.delete-button {
+    display: flex;
+    background-image: url('icon_delete.png');
+    width: 30px;
+    height: 30px;
+    margin: 7px 7px;
+    padding-block: 0px;
+    padding-inline: 0px;
+    border-width: 0px;
+}
+
+.field input {
+    width: 200px;
+    height: 38px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.field {
+
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.field label {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+.fieldnotice {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 30px;
+}
+
+.contactform-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 20px;
+}
+
+.contactform {
+    width: 100%;
+    max-width: 980px;
+    margin: auto;
+}
+
+.field input::placeholder {
+    color: #757575;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 13.3px;
+    vertical-align: middle;
+}
+
+.payment {
+    width: 100%;
+    max-width: 980px;
+    margin: auto;
+}
+
+.payment-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 20px;
+}
+
+.confirm-container {
+    direction: rtl;
+    max-width: 980px;
+    margin: auto;
+    margin-bottom: 40px;
+}
+
+.confirm-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 20px;
+}
+
+#confirm-button {
+    max-width: 173px;
+    height: 36px;
+    background-color: #448899;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 19px;
+    width: 100%;
+    line-height: 16px;
+    font-weight: 400;
+}
+
+#empty-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.empty-message {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 13.3px;
+    color: #666666;
+    margin-bottom: 20px;
+}
+
+
+@media (max-width: 1200px) and (min-width: 601px) {
+    .bookingmain {
+        margin: 0 auto;
+        width: 600px;
+
+    }
+
+    .headline {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin: auto;
+        max-width: 600px;
+    }
+
+    .booking-section {
+        width: 100%;
+        display: flex;
+        margin: auto;
+        width: 580px;
+
+    }
+
+    .booking-infor {
+        width: 340px;
+
+    }
+
+    .contactform {
+        width: 100%;
+        max-width: 580px;
+        margin: auto;
+    }
+
+    .payment {
+        width: 100%;
+        max-width: 580px;
+        margin: auto;
+    }
+
+    .confirm-container {
+        direction: rtl;
+        max-width: 580px;
+        margin: auto;
+        margin-bottom: 40px;
+    }
+
+
+}
+
+@media (min-width: 360px) and (max-width: 600px) {
+    .bookingmain {
+        margin: 0 auto;
+        width: 360px;
+    }
+
+    .headline {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin: auto;
+        max-width: 360px;
+    }
+
+    .booking-section {
+        width: 100%;
+        display: flex;
+        margin: auto;
+        width: 340px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .bookingpicture-container {
+        width: 340px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+        margin-right: 0px;
+    }
+
+    .booking-infor {
+        width: 340px;
+
+    }
+
+    .contactform {
+        width: 100%;
+        max-width: 340px;
+        margin: auto;
+    }
+
+    .payment {
+        width: 100%;
+        max-width: 340px;
+        margin: auto;
+    }
+
+    .confirm-container {
+        direction: rtl;
+        max-width: 340px;
+        margin: auto;
+        margin-bottom: 40px;
+    }
+
+    .delete {
+        width: 100%;
+        height: 100%;
+    }
+
+    .delete-button {
+        display: flex;
+        background-image: url('icon_delete.png');
+
+        margin: 7px 7px;
+        padding-block: 0px;
+        padding-inline: 0px;
+        border-width: 0px;
+        position: absolute;
+        right: 0;
+    }
+
+}

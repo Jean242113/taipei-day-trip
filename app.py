@@ -340,3 +340,202 @@ def getUserInfo(credentials: HTTPAuthorizationCredentials = Depends(security)):
         return JSONResponse(
             status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
         )
+
+
+@app.post("/api/booking")
+def booking(
+    booking: dict, credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    try:
+        token = credentials.credentials
+        decoded = jwt.decode(token, key, algorithms=["HS256"])
+        email = decoded["email"]
+        name = decoded["name"]
+    except jwt.ExpiredSignatureError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Token expired"}
+        )
+    except jwt.InvalidTokenError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Invalid token"}
+        )
+    except Exception as e:
+        print("ex:", e)
+        return JSONResponse(
+            status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
+        )
+
+    try:
+        booking["email"] = email
+        if check_booking_exists(booking["email"]):
+            update_booking(booking, email)
+        else:
+            booking["name"] = name
+            create_booking(booking, email, name)
+
+        res_content = {
+            "attractionId": booking["attractionId"],
+            "date": booking["date"],
+            "time": booking["time"],
+            "price": booking["price"],
+        }
+
+        return JSONResponse(content=res_content, status_code=200)
+
+    except mysql.connector.IntegrityError:
+        res_content = {
+            "error": True,
+            "message": "建立失敗，景點編號不正確或其他原因",
+        }
+        return JSONResponse(content=res_content, status_code=400)
+
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+def check_booking_exists(email):
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute(
+        "SELECT * FROM booking WHERE email = %s",
+        (email,),
+    )
+    booking_data = cursor.fetchone()
+    con.close()
+    return booking_data is not None
+
+
+def update_booking(booking: dict, email: str):
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute(
+        """
+        UPDATE booking
+        SET attraction_id = %s, date = %s, time = %s, price = %s
+        WHERE email = %s
+        """,
+        (
+            booking["attractionId"],
+            booking["date"],
+            booking["time"],
+            booking["price"],
+            email,
+        ),
+    )
+    con.commit()
+    con.close()
+
+
+def create_booking(booking: dict, email: str, name: str):
+    con = get_db()
+    cursor = con.cursor()
+    cursor.execute(
+        """
+        INSERT INTO booking (attraction_id, date, time, price, email, name)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+        (
+            booking["attractionId"],
+            booking["date"],
+            booking["time"],
+            booking["price"],
+            email,
+            name,
+        ),
+    )
+    con.commit()
+    con.close()
+
+
+@app.get("/api/booking")
+def get_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        decoded = jwt.decode(token, key, algorithms=["HS256"])
+        email = decoded["email"]
+    except jwt.ExpiredSignatureError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Token expired"}
+        )
+    except jwt.InvalidTokenError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Invalid token"}
+        )
+    except Exception as e:
+        print("ex:", e)
+        return JSONResponse(
+            status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
+        )
+
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            "select date, time, price, b.attraction_id, a.name, address, url image from booking b join attractions a on a._id = b.attraction_id left join images i on i.attraction_id = b.attraction_id WHERE email = %s",
+            (email,),
+        )
+        booking_data = cursor.fetchone()
+        con.close()
+
+        if booking_data is None:
+            res_content = {"data": None}
+            return JSONResponse(content=res_content, status_code=200)
+
+        res_content = {
+            "data": {
+                "attraction": {
+                    "id": booking_data["attraction_id"],
+                    "name": booking_data["name"],
+                    "address": booking_data["address"],
+                    "image": booking_data["image"],
+                },
+                "date": str(booking_data["date"]),
+                "time": booking_data["time"],
+                "price": booking_data["price"],
+            }
+        }
+
+        return JSONResponse(content=res_content, status_code=200)
+
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+@app.delete("/api/booking")
+def delete_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        token = credentials.credentials
+        decoded = jwt.decode(token, key, algorithms=["HS256"])
+        email = decoded["email"]
+    except jwt.ExpiredSignatureError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Token expired"}
+        )
+    except jwt.InvalidTokenError:
+        return JSONResponse(
+            status_code=403, content={"error": True, "message": "Invalid token"}
+        )
+    except Exception as e:
+        print("ex:", e)
+        return JSONResponse(
+            status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
+        )
+
+    try:
+        con = get_db()
+        cursor = con.cursor()
+        cursor.execute("DELETE FROM booking WHERE email = %s", (email,))
+        con.commit()
+        con.close()
+
+        res_content = {"ok": True, "message": "刪除成功"}
+        return JSONResponse(content=res_content, status_code=200)
+
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)

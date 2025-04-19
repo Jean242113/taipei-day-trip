@@ -1,11 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <link rel="stylesheet" href="../static/login.css">
+  <link rel="stylesheet" href="../static/booking.css">
+  <link rel="stylesheet" href="../static/common.css">
 </head>
+
 <body>
-  
+  <div class="login-container"></div>
+
+  <header>
+    <div class="navigation">
+      <div class="navigation-container">
+        <a href="/" class="logo-link">
+          <div class="logo">台北一日遊</div>
+        </a>
+        <div class="nav">
+          <button id="booking">預定行程</a>
+            <button id="login"></a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="bookingmain">
+    <div class="headline">
+      <p></p>
+    </div>
+    <div id="empty-container">
+      <div class="empty-message">
+        <p>目前沒有任何待預訂的行程</p>
+      </div>
+    </div>
+
+    <div id="booking-container">
+      <div class="booking-section">
+        <div class="bookingpicture-container">
+          <img class="booking-picture"></img>
+        </div>
+        <div class="booking-infor">
+          <div id="frame1">
+            <p></p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame2">
+            <p class="booking-title">日期：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame3">
+            <p class="booking-title">時間：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame4">
+            <p class="booking-title">費用：</p>
+            <p></p>
+          </div>
+          <div class="frame-info" id="frame5">
+            <p class="booking-title">地點：</p>
+            <p></p>
+          </div>
+        </div>
+        <div class="delete">
+          <button class="delete-button"></button>
+        </div>
+      </div>
+
+      <div class="separator"></div>
+      <div class="contactform">
+        <div class="contactform-title">
+          <p>您的聯絡資訊</p>
+        </div>
+        <div class="field">
+          <label for="name">聯絡姓名：</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">聯絡信箱：</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="phone">手機號碼：</label>
+          <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div class="fieldnotice">
+          <p>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</p>
+        </div>
+      </div>
+      <div class="separator"></div>
+      <div class="payment">
+        <div class="payment-title">
+          <p>信用卡付款資訊</p>
+        </div>
+        <div class="field">
+          <label for="card-number">卡片號碼：</label>
+          <input type="text" id="card-number" name="card-number" placeholder="**** **** **** ****" required>
+        </div>
+        <div class="field">
+          <label for="expiry-date">過期時間：</label>
+          <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY" required>
+        </div>
+        <div class="field">
+          <label for="cvv">驗證密碼：</label>
+          <input type="text" id="cvv" name="cvv" placeholder="CVV" required>
+        </div>
+      </div>
+      <div class="separator"></div>
+      <div class="confirm-container">
+        <div class="confirm-title">
+          <p></p>
+        </div>
+        <div class="confirmbutton-container">
+          <button type="button" id="confirm-button">確認訂購並付款</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+  </footer>
+  <script src="static/booking.js"></script>
+  <script src="static/common.js"></script>
 </body>
+
 </html>
