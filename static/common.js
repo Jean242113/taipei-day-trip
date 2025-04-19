@@ -50,7 +50,9 @@ async function addLoginInit() {
         if (token) {
             window.location.href = "/booking"; // 導向預定頁面
         } else {
-            document.getElementById("login").click(); // 顯示登入頁面
+            // document.getElementById("login").click(); // 顯示登入頁面
+            localStorage.setItem('login', 'true'); // 設定登入狀態
+            window.location.href = "/"; // 導向首頁
         }
     });
 
@@ -151,6 +153,11 @@ async function addLoginInit() {
             .finally(() => {
                 loginButton.disabled = false; // Re-enable the button after the request is complete
             });
+    }
+
+    if (localStorage.getItem("login") === "true") {
+        document.getElementById("login").click(); // 顯示登入頁面
+        localStorage.removeItem("login"); // 移除登入狀態
     }
 }
 

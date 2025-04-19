@@ -173,7 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         // alert('預定成功！');
                         window.location.href = '/booking'; // 預定成功後導向預定頁面
                     } else {
-                        document.getElementById("login").click(); // 顯示登入頁面
+                        // document.getElementById("login").click(); // 顯示登入頁面
+                        localStorage.setItem('login', 'true'); // 設定登入狀態
+                        window.location.href = '/';
                     }
                 })
                 .catch(error => console.error('預定請求失敗:', error));
