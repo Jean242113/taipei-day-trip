@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addLoginInit();
     addBookingInit();
 
-    if (!isUserLoggedIn()) {
+    if (localStorage.getItem('token') == null) {
         window.location.href = "/"; // 導向首頁
     }
 
