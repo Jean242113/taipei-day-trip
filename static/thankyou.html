@@ -1,11 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You</title>
+  <link rel="stylesheet" href="../static/common.css">
+  <link rel="stylesheet" href="../static/style.css">
+  <link rel="stylesheet" href="../static/login.css">
+  <script src="static/common.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const number = urlParams.get('number');
+    document.addEventListener("DOMContentLoaded", function () {
+      addLoginInit();
+
+      if (localStorage.getItem('token') == null) {
+        window.location.href = "/"; // 導向首頁
+      }
+
+      document.getElementById("number").innerText = number;
+    });
+  </script>
 </head>
+
 <body>
-  
+  <header>
+    <div class="navigation">
+      <div class="navigation-container">
+        <a href="/" class="logo-link">
+          <div class="logo">台北一日遊</div>
+        </a>
+        <div class="nav">
+          <button id="booking">預定行程</a>
+            <button id="login"></a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="thankyou-container" style="width: 1200px; margin: auto;">
+    <label>Your order number is : </label><label id="number"></label>
+  </div>
+  <footer>
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+  </footer>
 </body>
+
 </html>

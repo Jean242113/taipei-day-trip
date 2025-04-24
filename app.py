@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 import json
 import mysql.connector
 import jwt
+import requests
 
 
 def get_db():  # 連接資料庫
@@ -449,12 +450,11 @@ def create_booking(booking: dict, email: str, name: str):
     con.close()
 
 
-@app.get("/api/booking")
-def get_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def get_email(token):
     try:
-        token = credentials.credentials
         decoded = jwt.decode(token, key, algorithms=["HS256"])
         email = decoded["email"]
+        return email
     except jwt.ExpiredSignatureError:
         return JSONResponse(
             status_code=403, content={"error": True, "message": "Token expired"}
@@ -468,6 +468,13 @@ def get_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
         return JSONResponse(
             status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
         )
+
+
+@app.get("/api/booking")
+def get_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    email = get_email(credentials.credentials)
+    if isinstance(email, JSONResponse):
+        return email
 
     try:
         con = get_db()
@@ -507,23 +514,9 @@ def get_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
 
 @app.delete("/api/booking")
 def delete_booking(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    try:
-        token = credentials.credentials
-        decoded = jwt.decode(token, key, algorithms=["HS256"])
-        email = decoded["email"]
-    except jwt.ExpiredSignatureError:
-        return JSONResponse(
-            status_code=403, content={"error": True, "message": "Token expired"}
-        )
-    except jwt.InvalidTokenError:
-        return JSONResponse(
-            status_code=403, content={"error": True, "message": "Invalid token"}
-        )
-    except Exception as e:
-        print("ex:", e)
-        return JSONResponse(
-            status_code=500, content={"error": True, "message": "伺服器內部錯誤"}
-        )
+    email = get_email(credentials.credentials)
+    if isinstance(email, JSONResponse):
+        return email
 
     try:
         con = get_db()
@@ -539,3 +532,141 @@ def delete_booking(credentials: HTTPAuthorizationCredentials = Depends(security)
         print("ex:", e)
         res_content = {"error": True, "message": str(e)}
         return JSONResponse(content=res_content, status_code=500)
+
+
+@app.post("/api/orders")
+def createOrder(
+    orders: dict, credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    email = get_email(credentials.credentials)
+    if isinstance(email, JSONResponse):
+        return email
+    booking_id = get_booking_id(orders["contact"]["email"])
+    if isinstance(booking_id, JSONResponse):
+        return booking_id
+    order = get_order_from_db(booking_id)
+    if isinstance(order, JSONResponse):
+        return order
+    if order is None:
+        result = create_order_to_db(orders, booking_id)
+        if result is not None:
+            return result
+        order = get_order_from_db(booking_id)
+        if isinstance(order, JSONResponse):
+            return order
+    response = tap_pay(orders, order["id"])
+    if isinstance(response, JSONResponse):
+        return response
+    result = update_order(response, order["id"])
+    if isinstance(result, JSONResponse):
+        return result
+    return JSONResponse(
+        content={
+            "data": {
+                "number": response["order_number"],
+                "payment": {"status": response["status"], "message": "付款成功"},
+            }
+        },
+        status_code=200,
+    )
+
+
+def get_booking_id(email: str):
+    try:
+        con = get_db()
+        cursor = con.cursor()
+        cursor.execute(
+            """
+            SELECT id FROM booking WHERE email = %s
+            """,
+            (email,),
+        )
+        booking_id = cursor.fetchone()
+        con.close()
+        return booking_id[0] if booking_id else None
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+def create_order_to_db(orders: dict, order_id: int):
+    try:
+        con = get_db()
+        cursor = con.cursor()
+        cursor.execute(
+            """
+            INSERT INTO orders (booking_id, order_phone, payment_status)
+            VALUES (%s, %s, %s)
+            """,
+            (
+                order_id,
+                orders["contact"]["phone"],
+                "UNPAID",
+            ),
+        )
+        con.commit()
+        con.close()
+        return
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+def get_order_from_db(booking_id: str):
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT * FROM orders WHERE booking_id = %s and payment_status = 'UNPAID'
+            """,
+            (booking_id,),
+        )
+        order_data = cursor.fetchone()
+        con.close()
+        return order_data
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+def tap_pay(orders: dict, order_id: int):
+    url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": "partner_xmmPhJr75LeGUcEXx1xxrAVgKW8S9mRUgbUlJt2GgflymYFJtIg71D0m",
+    }
+
+    now = datetime.now()
+    current_date = now.strftime("%Y%m%d")
+
+    # 將年月日和 order_id 拼接成新的訂單編號
+    new_order_number = current_date + str(order_id)
+
+    body = {
+        "prime": orders["prime"],
+        "partner_key": "partner_xmmPhJr75LeGUcEXx1xxrAVgKW8S9mRUgbUlJt2GgflymYFJtIg71D0m",
+        "merchant_id": "jean_ESUN",
+        "amount": orders["order"]["price"],
+        "currency": "TWD",
+        "details": "Taipei Tour",
+        "order_number": new_order_number,
+        "cardholder": {
+            "phone_number": orders["contact"]["phone"],
+            "name": orders["contact"]["name"],
+            "email": orders["contact"]["email"],
+        },
+    }
+    response = requests.post(url, headers=headers, json=body)
+    response_data = response.json()
+    if response_data["status"] == 0:
+        return response_data
+    else:
+        res_content = {
+            "error": True,
+            "message": "付款失敗，請檢查信用卡資訊或其他原因\n" + response_data["msg"],
+        }
+        return JSONResponse(content=res_content, status_code=400)

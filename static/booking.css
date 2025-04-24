@@ -95,6 +95,16 @@
     border-width: 0px;
 }
 
+.tpfield {
+    width: 200px;
+    height: 38px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
 .field input {
     width: 200px;
     height: 38px;
@@ -190,6 +200,10 @@
     width: 100%;
     line-height: 16px;
     font-weight: 400;
+}
+
+#confirm-button:disabled {
+    background-color: purple;
 }
 
 #empty-container {
