@@ -1,4 +1,5 @@
-.bookingmain {
+.bookingmain,
+.thankyoumain {
     margin: 0 auto;
     width: 1200px;
 
@@ -18,6 +19,17 @@
     margin-bottom: 20px;
     line-height: 16px;
     color: #666666;
+}
+
+.thankyou-container {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #666666;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+
 }
 
 .booking-section {
@@ -135,6 +147,14 @@
     line-height: 13.3px;
     color: #666666;
     margin-bottom: 30px;
+}
+
+.one p {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #448899;
+    margin-bottom: 20px;
 }
 
 .contactform-title {

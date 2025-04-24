@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="../static/common.css">
   <link rel="stylesheet" href="../static/style.css">
   <link rel="stylesheet" href="../static/login.css">
+  <link rel="stylesheet" href="../static/booking.css">
   <script src="static/common.js"></script>
+  <script src="static/thankyou.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const number = urlParams.get('number');
@@ -38,14 +40,74 @@
       </div>
     </div>
   </header>
-  <div class="thankyou-container" style="width: 1200px; margin: auto;">
-    <label>Your order number is : </label><label id="number"></label>
-  </div>
-  <footer>
-    <div class="footer">
-      <p>COPYRIGHT © 2021 台北一日遊</p>
+  <div class="thankyoumain">
+    <div class="headline">
+      <div class="thankyou-container">
+        <label>感謝您的預訂！</label>
+        <label>您的預訂編號是</label>
+        <label id="number"></label>
+        <label>，以下是您預定的行程資訊:</label>
+      </div>
     </div>
-  </footer>
+  </div>
+
+  <div id="booking-container">
+    <div class="booking-section">
+      <div class="bookingpicture-container">
+        <img class="booking-picture"></img>
+      </div>
+      <div class="booking-infor">
+        <div id="frame1">
+          <p></p>
+          <p></p>
+        </div>
+        <div class="frame-info" id="frame2">
+          <p class="booking-title">日期：</p>
+          <p></p>
+        </div>
+        <div class="frame-info" id="frame3">
+          <p class="booking-title">時間：</p>
+          <p></p>
+        </div>
+        <div class="frame-info" id="frame4">
+          <p class="booking-title">付款金額：</p>
+          <p></p>
+        </div>
+        <div class="frame-info" id="frame5">
+          <p class="booking-title">地點：</p>
+          <p></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="separator"></div>
+    <div class="contactform">
+      <div class="contactform-title">
+        <p>您的聯絡資訊</p>
+      </div>
+      <div class="field">
+        <label for="name">聯絡姓名：</label>
+        <label type="text" id="name" name="name" required>
+      </div>
+      <div class="field">
+        <label for="email">聯絡信箱：</label>
+        <label type="email" id="email" name="email" required>
+      </div>
+      <div class="field">
+        <label for="phone">手機號碼：</label>
+        <label type="tel" id="phone" name="phone" required>
+      </div>
+      <div class="separator"></div>
+      <div class="one">
+        <p>請帶著輕鬆愉快的心情好好享受這段美好的旅行~</p>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer">
+        <p>COPYRIGHT © 2021 台北一日遊</p>
+      </div>
+    </footer>
 </body>
 
 </html>

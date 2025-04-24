@@ -641,10 +641,11 @@ def tap_pay(orders: dict, order_id: int):
     }
 
     now = datetime.now()
-    current_date = now.strftime("%Y%m%d")
+    # 格式化為 YYYYMMDDHHMMSS
+    current_datetime = now.strftime("%Y%m%d%H%M%S")
 
     # 將年月日和 order_id 拼接成新的訂單編號
-    new_order_number = current_date + str(order_id)
+    new_order_number = current_datetime + str(order_id)
 
     body = {
         "prime": orders["prime"],
@@ -670,3 +671,108 @@ def tap_pay(orders: dict, order_id: int):
             "message": "付款失敗，請檢查信用卡資訊或其他原因\n" + response_data["msg"],
         }
         return JSONResponse(content=res_content, status_code=400)
+
+
+def update_order(orders: dict, order_id: int):
+    try:
+        con = get_db()
+        cursor = con.cursor()
+        cursor.execute(
+            """
+            UPDATE orders
+            SET payment_status = %s, payment_serial = %s
+            WHERE id = %s
+            """,
+            (
+                "PAID",
+                orders["order_number"],
+                order_id,
+            ),
+        )
+        con.commit()
+        con.close()
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+def get_order(orders: dict, order_id: int):
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT * FROM orders WHERE id = %s
+            """,
+            (order_id,),
+        )
+        order_data = cursor.fetchone()
+        con.close()
+        return order_data
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
+
+
+@app.get("/api/order/{orderNumber}")
+def get_order_by_number(
+    orderNumber: str, credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    email = get_email(credentials.credentials)
+    if isinstance(email, JSONResponse):
+        return email
+
+    try:
+        con = get_db()
+        cursor = con.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT * FROM orders o join booking b on o.booking_id = b.id join attractions a on b.attraction_id = a._id  left join images i on i.attraction_id = b.attraction_id WHERE payment_serial = %s
+            """,
+            (orderNumber,),
+        )
+        order_data = cursor.fetchone()
+        con.close()
+
+        if order_data is None:
+            res_content = {"data": None}
+            return JSONResponse(content=res_content, status_code=200)
+
+        res_content = {
+            "data": {
+                "number": order_data["payment_serial"],
+                "payment": {
+                    "status": order_data["payment_status"],
+                    "message": (
+                        "付款成功"
+                        if order_data["payment_status"] == "PAID"
+                        else "付款失敗"
+                    ),
+                },
+                "price": order_data["price"],
+                "trip": {
+                    "attraction": {
+                        "id": order_data["attraction_id"],
+                        "name": order_data["name"],
+                        "address": order_data["address"],
+                        "image": order_data["url"],
+                    },
+                    "date": str(order_data["date"]),
+                    "time": order_data["time"],
+                },
+                "contact": {
+                    "name": order_data["name"],
+                    "email": order_data["email"],
+                    "phone": order_data["order_phone"],
+                },
+            }
+        }
+
+        return JSONResponse(content=res_content, status_code=200)
+
+    except Exception as e:
+        print("ex:", e)
+        res_content = {"error": True, "message": str(e)}
+        return JSONResponse(content=res_content, status_code=500)
