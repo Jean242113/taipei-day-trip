@@ -729,7 +729,7 @@ def get_order_by_number(
         cursor = con.cursor(dictionary=True)
         cursor.execute(
             """
-            SELECT * FROM orders o join booking b on o.booking_id = b.id join attractions a on b.attraction_id = a._id  left join images i on i.attraction_id = b.attraction_id WHERE payment_serial = %s
+            SELECT payment_serial, payment_status, a._id attraction_id, a.name attraction_name, a.address, i.url, b.price, b.date, b.time, b.name, b.email, o.order_phone FROM orders o join booking b on o.booking_id = b.id join attractions a on b.attraction_id = a._id  left join images i on i.attraction_id = b.attraction_id WHERE payment_serial = %s
             """,
             (orderNumber,),
         )
@@ -755,7 +755,7 @@ def get_order_by_number(
                 "trip": {
                     "attraction": {
                         "id": order_data["attraction_id"],
-                        "name": order_data["name"],
+                        "name": order_data["attraction_name"],
                         "address": order_data["address"],
                         "image": order_data["url"],
                     },
