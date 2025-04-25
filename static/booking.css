@@ -134,6 +134,8 @@
 }
 
 .field label {
+    display: inline-block;
+    vertical-align: middle;
     font-size: 16px;
     font-weight: 700;
     line-height: 13.3px;
@@ -141,12 +143,25 @@
     margin-bottom: 5px;
 }
 
+.field .tpfield {
+    display: inline-block;
+    vertical-align: middle;
+
+}
+
+
 .fieldnotice {
     font-size: 16px;
     font-weight: 700;
-    line-height: 13.3px;
+    line-height: normal;
     color: #666666;
     margin-bottom: 30px;
+}
+
+.one {
+    width: 100%;
+    margin: auto;
+    max-width: 980px;
 }
 
 .one p {
@@ -155,6 +170,7 @@
     line-height: 13.3px;
     color: #448899;
     margin-bottom: 20px;
+
 }
 
 .contactform-title {
@@ -242,9 +258,23 @@
 
 
 @media (max-width: 1200px) and (min-width: 601px) {
-    .bookingmain {
+
+    .bookingmain,
+    .thankyoumain {
         margin: 0 auto;
         width: 600px;
+
+    }
+
+    .thankyou-container {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 20px;
+        color: #666666;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: justify;
+
 
     }
 
@@ -292,7 +322,9 @@
 }
 
 @media (min-width: 360px) and (max-width: 600px) {
-    .bookingmain {
+
+    .bookingmain,
+    .thankyoumain {
         margin: 0 auto;
         width: 360px;
     }
@@ -303,6 +335,18 @@
         align-items: center;
         margin: auto;
         max-width: 360px;
+    }
+
+    .thankyou-container {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 20px;
+        color: #666666;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: justify;
+
+
     }
 
     .booking-section {
