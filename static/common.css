@@ -26,6 +26,12 @@ body {
 
 }
 
+.separator {
+    width: 1200px;
+    border-bottom: 1px solid #ddd;
+    margin: 30px auto;
+}
+
 .footer {
     background-color: #757575;
     color: #fff;

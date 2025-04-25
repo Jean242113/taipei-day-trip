@@ -1,4 +1,5 @@
-.bookingmain {
+.bookingmain,
+.thankyoumain {
     margin: 0 auto;
     width: 1200px;
 
@@ -18,6 +19,17 @@
     margin-bottom: 20px;
     line-height: 16px;
     color: #666666;
+}
+
+.thankyou-container {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #666666;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+
 }
 
 .booking-section {
@@ -95,6 +107,16 @@
     border-width: 0px;
 }
 
+.tpfield {
+    width: 200px;
+    height: 38px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
 .field input {
     width: 200px;
     height: 38px;
@@ -112,6 +134,8 @@
 }
 
 .field label {
+    display: inline-block;
+    vertical-align: middle;
     font-size: 16px;
     font-weight: 700;
     line-height: 13.3px;
@@ -119,12 +143,34 @@
     margin-bottom: 5px;
 }
 
+.field .tpfield {
+    display: inline-block;
+    vertical-align: middle;
+
+}
+
+
 .fieldnotice {
     font-size: 16px;
     font-weight: 700;
-    line-height: 13.3px;
+    line-height: normal;
     color: #666666;
     margin-bottom: 30px;
+}
+
+.one {
+    width: 100%;
+    margin: auto;
+    max-width: 980px;
+}
+
+.one p {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 13.3px;
+    color: #448899;
+    margin-bottom: 20px;
+
 }
 
 .contactform-title {
@@ -192,6 +238,10 @@
     font-weight: 400;
 }
 
+#confirm-button:disabled {
+    background-color: purple;
+}
+
 #empty-container {
     width: 100%;
     max-width: 1000px;
@@ -208,9 +258,23 @@
 
 
 @media (max-width: 1200px) and (min-width: 601px) {
-    .bookingmain {
+
+    .bookingmain,
+    .thankyoumain {
         margin: 0 auto;
         width: 600px;
+
+    }
+
+    .thankyou-container {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 20px;
+        color: #666666;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: justify;
+
 
     }
 
@@ -258,7 +322,9 @@
 }
 
 @media (min-width: 360px) and (max-width: 600px) {
-    .bookingmain {
+
+    .bookingmain,
+    .thankyoumain {
         margin: 0 auto;
         width: 360px;
     }
@@ -269,6 +335,18 @@
         align-items: center;
         margin: auto;
         max-width: 360px;
+    }
+
+    .thankyou-container {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 20px;
+        color: #666666;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: justify;
+
+
     }
 
     .booking-section {
@@ -317,6 +395,7 @@
     }
 
     .delete {
+        position: relative;
         width: 100%;
         height: 100%;
     }
